@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mi Grado — Bridgette Toro</title>
+<style>
+:root{
+  --champagne:#f7e7ce;
+  --perla:#fdfdf9;
+  --gold:#d4af37;
+  --gold-dark:#b7962c;
+  --text:#3b3b3b;
+  --muted:rgba(59,59,59,0.65);
+  --glass: rgba(255,255,255,0.85);
+}
+
+*{box-sizing:border-box;}
+body{margin:0;font-family:Inter,'Montserrat',system-ui,-apple-system,'Segoe UI',Roboto,Arial;background:var(--perla);color:var(--text);-webkit-font-smoothing:antialiased;}
+
+/* Fondo animado sutil */
+.background-animation{
+  position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(212,175,55,0.06), transparent 8%),
+    radial-gradient(circle at 90% 80%, rgba(212,175,55,0.04), transparent 12%),
+    linear-gradient(180deg,var(--perla), #fff);
+  animation:pulse 8s ease-in-out infinite;
+}
+@keyframes pulse{0%{filter:brightness(1)}100%{filter:brightness(1.06)}}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:24px;text-align:center;}
+.slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease;}
+.slide.visible{opacity:1;}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,247,240,0.6), rgba(255,240,230,0.8));pointer-events:none;}
+.hero-content{position:relative;z-index:2;max-width:92%;animation:floatingSoft 4s ease-in-out infinite;}
+@keyframes floatingSoft {0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+.hero-title{font-family:'Playfair Display', serif;font-size:2.25rem;margin:0;color:var(--gold);letter-spacing:0.6px;animation:glowGold 2.5s infinite alternate;cursor:pointer;}
+@keyframes glowGold{0%{filter:drop-shadow(0 0 8px rgba(212,175,55,0.35))}100%{filter:drop-shadow(0 0 18px rgba(212,175,55,0.6))}}
+.hero-sub{margin:10px 0 0 0;color:var(--muted);font-size:1rem;}
+.enter-btn{margin-top:22px;padding:12px 28px;background:linear-gradient(180deg,var(--gold),var(--gold-dark));border:none;border-radius:999px;color:white;font-weight:600;cursor:pointer;box-shadow:0 6px 20px rgba(180,140,60,0.18);font-size:1rem;}
+.enter-btn:hover{transform:scale(1.03);}
+.flecha-btn{font-size:2rem;color:var(--gold-dark);margin-top:10px;text-shadow:0 2px 6px rgba(0,0,0,0.08);animation:flechaBounce 1.6s infinite;}
+@keyframes flechaBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+/* MENÚ OPCIONES */
+#menuOpciones{display:none;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:28px;position:relative;overflow:hidden;}
+.menu-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;}
+.menu-card{background:var(--glass);backdrop-filter: blur(6px);border-radius:18px;padding:30px;width:100%;max-width:420px;border:1px solid rgba(212,175,55,0.18);box-shadow:0 10px 40px rgba(0,0,0,0.06);text-align:center;}
+.menu-btn{width:100%;padding:14px;border-radius:12px;border:2px solid var(--gold);background:var(--champagne);font-size:1.05rem;font-weight:600;cursor:pointer;margin-top:12px;}
+.menu-btn:hover{background:var(--gold);color:#fff;}
+
+/* BACK ARROW */
+.back-arrow{position:fixed;top:16px;left:12px;font-size:1.6rem;color:var(--gold-dark);z-index:60;display:none;cursor:pointer}
+
+/* SECCIÓN FORM */
+#mensajesSection{display:none;padding:48px 20px 80px;}
+.container{max-width:820px;margin:0 auto;background:var(--perla);border-radius:18px;padding:28px;border:2px solid var(--gold);box-shadow:0 12px 40px rgba(0,0,0,0.06);}
+h2{margin:0 0 6px 0;text-align:center;color:var(--gold-dark);font-size:1.25rem;}
+.hint{text-align:center;color:var(--muted);font-size:0.95rem;margin-bottom:14px;}
+form{display:flex;flex-direction:column;gap:12px;}
+input,textarea{padding:12px;border-radius:12px;border:1px solid #e3d9c2;font-size:1rem;}
+button[type=submit]{padding:12px;border-radius:12px;border:none;background:linear-gradient(180deg,var(--gold),var(--gold-dark));color:#fff;font-weight:700;cursor:pointer;}
+
+/* LIBRO DE RECUERDOS */
+#libroRecuerdos{display:none;max-width:820px;margin:24px auto;padding:0 12px;}
+#buscador{width:100%;padding:12px;border-radius:12px;border:1px solid #e3d9c2;font-size:1rem;margin-bottom:16px;}
+.carta{width:100%;max-width:500px;margin:12px auto;padding:18px;background:var(--champagne);border:2px solid var(--gold);border-radius:14px;box-shadow:0 8px 20px rgba(0,0,0,0.08);opacity:0;transition:opacity 0.5s ease;}
+.carta.mostrar{opacity:1;}
+.mensajeCarta{white-space:pre-wrap;}
+
+/* MODO SECRETO */
+#modoSecreto{display:none;padding:24px;}
+.mensaje-secreto{padding:8px 12px;margin:6px 0;background:var(--champagne);border:1px solid var(--gold);border-radius:8px;position:relative;}
+
+/* RESPONSIVE */
+@media(max-width:760px){
+  .hero-title{font-size:2rem;}
+  .hero-sub{font-size:0.95rem;}
+  .enter-btn{padding:10px 20px;font-size:0.95rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="background-animation" aria-hidden="true"></div>
+
+<!-- MÚSICA -->
+<audio id="musicaFondo" src="musica.mp3" loop autoplay></audio>
+
+<!-- HERO -->
+<main class="hero" id="hero">
+  <img src="fotos_grado/img1.jpg" class="slide visible" alt="foto 1">
+  <img src="fotos_grado/img2.jpg" class="slide" alt="foto 2">
+  <img src="fotos_grado/img3.png" class="slide" alt="foto 3">
+  <img src="fotos_grado/img4.png" class="slide" alt="foto 4">
+  <div class="hero-content">
+    <h1 class="hero-title" id="secretAdminTrigger">Bridgette Toro</h1>
+    <p class="hero-sub">27.11.2025</p>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="flecha-btn" aria-hidden="true">⬇️</div>
+      <button class="enter-btn" id="enterBtn" aria-label="Entrar a opciones">Entrar ✨</button>
+    </div>
+  </div>
+</main>
+
+<!-- MENÚ OPCIONES -->
+<div id="menuOpciones" role="dialog" aria-modal="true">
+  <video class="menu-video" src="fotos_grado/Video.mp4" autoplay muted loop></video>
+  <div class="menu-card">
+    <h3 style="margin:0;color:var(--gold-dark)">¿Qué quieres hacer?</h3>
+    <p style="color:var(--muted);margin-top:8px">Elige una opción</p>
+    <button class="menu-btn" id="btnLibro">Libro de recuerdos 📖</button>
+    <button class="menu-btn" data-tipo="U">Consejos para la U</button>
+    <button class="menu-btn" data-tipo="Vida">Mensajes para la vida</button>
+  </div>
+</div>
+
+<div class="back-arrow" id="backArrow">⬅️</div>
+
+<!-- SECCIÓN FORM -->
+<section id="mensajesSection">
+  <div class="container">
+    <h2 id="tituloForm">Escribe tu mensaje</h2>
+    <p class="hint">Tus palabras quedarán guardadas y podre verlas luego.</p>
+    <form id="formMensaje">
+      <input id="nombre" name="nombre" type="text" placeholder="Tu nombre" required />
+      <textarea id="mensaje" name="mensaje" rows="4" placeholder="Tu mensaje" required></textarea>
+      <button type="submit">Enviar</button>
+    </form>
+    <div class="respuesta" id="respuesta"></div>
+  </div>
+</section>
+
+<!-- LIBRO DE RECUERDOS -->
+<section id="libroRecuerdos">
+  <input id="buscador" type="text" placeholder="Escribe un nombre para buscar..." aria-label="Buscador de recuerdos">
+  <div id="cartasContainer"></div>
+</section>
+
+<!-- MODO SECRETO -->
+<section id="modoSecreto">
+  <div class="back-arrow" id="backArrowSecreto">⬅️</div>
+  <h2 style="text-align:center;color:var(--gold-dark);margin-bottom:16px;">Modo Secreto: Mensajes</h2>
+  <h3 style="color:var(--gold-dark)">Consejos U 💛</h3>
+  <div id="listaU"></div>
+  <h3 style="color:var(--gold-dark)">Mensajes Vida ✨</h3>
+  <div id="listaVida"></div>
+</section>
+
+<script>
+const STORAGE_KEY='mensajesGraduacion';
+const SECRET_PASSWORD='B2008rid@';
+
+const enterBtn = document.getElementById('enterBtn');
+const hero = document.getElementById('hero');
+const menu = document.getElementById('menuOpciones');
+const backArrow = document.getElementById('backArrow');
+const mensajesSection = document.getElementById('mensajesSection');
+const libroRecuerdos = document.getElementById('libroRecuerdos');
+const tituloForm = document.getElementById('tituloForm');
+const form = document.getElementById('formMensaje');
+const respuestaDiv = document.getElementById('respuesta');
+const btnLibro = document.getElementById('btnLibro');
+const buscador = document.getElementById('buscador');
+const cartasContainer = document.getElementById('cartasContainer');
+const secretTrigger = document.getElementById('secretAdminTrigger');
+const modoSecreto = document.getElementById('modoSecreto');
+const backArrowSecreto = document.getElementById('backArrowSecreto');
+const listaU = document.getElementById('listaU');
+const listaVida = document.getElementById('listaVida');
+
+let tipoSeleccionado = '';
+let secretClickCount = 0;
+let escrituraTimeout = null;
+
+const mensajesPersonalizados = {
+  "Alba Luz Quevedo Rincón":"Mi Albys… Qué difícil poner en palabras lo que significas para mí. Tú empezaste siendo mi directora de grupo, pero terminaste convirtiéndote en una de las personas más importantes de mi vida. Gracias por abrirme tu corazón, por escucharme sin juzgarme, por permitirme ser yo misma y confiar en mí como muy pocas personas lo hacen. Contarte mis cosas y escucharte contarme las tuyas creó un lazo que no se rompe con nada. No sé qué haría ahora sin ti, porque te convertiste en un lugar seguro, en una amiga de verdad, en alguien que me cambió la vida sin darse cuenta. Espero que lo que somos hoy siga creciendo, que no sea un recuerdo bonito del colegio sino un vínculo que nos acompañe siempre. Te quiero con el alma, vida mía, y gracias por existir en mi camino.",
+  "Claudia Marcela Arbeláez":"Mi Marce, tú fuiste mucho más que mi profesora de 4° y 5°. Fuiste una huella profunda, de esas que se quedan para siempre en la memoria y en el corazón. Gracias por enseñarme con tanta paciencia, por creer en mí desde tan pequeña, por hacerme sentir capaz incluso cuando yo no lo veía. El cariño que te tengo nace de esos años en los que tus palabras y tu forma de ser hicieron que amar aprender fuera fácil y bonito. Te quiero bastante, y siempre vas a ser una parte esencial de mis recuerdos de infancia.",
+  "Julián Andrés Beltrán Naranjo":"Juli, mi mejor amigo. Qué regalo tan grande fue conocerte en octavo, en ese 2022 que nos cambió tantas cosas. Desde entonces te convertiste en alguien que me acompaña, que me entiende y que está ahí sin que yo tenga que pedirlo. Tenerte como amigo ha sido una de las mejores cosas que me ha pasado en el colegio. Gracias por tu apoyo, por tus risas, por tus consejos y por la forma tan bonita en la que haces que la vida sea un poco más liviana. Eres de esas personas que uno quiere conservar por siempre. Te quiero mucho, Juli.",
+  "Neidy Lucía Botero":"Neidylu, tú fuiste una compañera, una aliada y una amiga. Gracias por estar conmigo en mi campaña de personería, por creer en mí, por apoyarme cuando más lo necesitaba. Ganar no habría sido igual sin ti, y trabajar juntas después fue una experiencia que siempre voy a valorar. Me enseñaste lo que significa la lealtad, lo que es tener a alguien firme al lado. Gracias por ser parte de esa etapa tan especial y por todo el cariño que me diste. Te quiero mucho y siempre te llevaré en mi corazón.",
+  "Laura Patricia Parra":"Lau, fuiste más que mi instructora del SENA; fuiste una guía, un ejemplo y una persona que me marcó con su forma tan humana y cercana de enseñar. Te quiero bastante porque siempre me trataste con respeto, cariño y sinceridad. Gracias por confiar en mi proceso, por motivarme y por enseñarme cosas que no solo me sirven para el estudio, sino también para la vida. Espero que sigas siendo esa luz para muchos otros estudiantes, porque personas como tú hacen la diferencia. Te deseo lo mejor en todo lo que emprendas.",
+  "Jhoan Matteo Grajales":"Mi Matiu… Qué bonito fue encontrarte en ese 2022. Desde entonces construimos una amistad especial, de esas que llegan sin avisar pero se vuelven parte del corazón. Te quiero bastante porque contigo siempre puedo ser yo misma, porque tu forma de escuchar y acompañar no la tiene cualquiera. Te extraño cuando no te veo y me alegra cada vez que volvemos a hablar como si nunca hubiera pasado el tiempo. Gracias por ser tú, por tu cariño y por tu presencia en mi vida.",
+  "Marianela":"Marianela, aunque hace tiempo no te veo desde que salí de la agencia, quiero que sepas que te guardo un cariño muy grande. Eres una persona que llegó a mi vida en un momento especial, y aunque los caminos se separaron un poco, el recuerdo bonito de nuestra amistad sigue firme. Ojalá la vida nos vuelva a cruzar, porque te quiero y te valoro más de lo que imaginas.",
+  "Hayelem Alexandra Pernia":"Ale, cinco años ya desde aquella pandemia donde todo cambió, pero tú te quedaste. Eres una amiga constante, leal y verdadera. Tal vez no sabes lo importante que eres para mí, pero quiero que lo sepas: tu presencia ha sido un refugio, una compañía que me ha sostenido en momentos buenos y difíciles. Gracias por estos años, por tantas risas, por tantas conversaciones y por seguir aquí. Te quiero inmensamente.",
+  "Karen Yuliana Méndez":"Karen, desde pandemia nuestras vidas se unieron, se separaron y se volvieron a encontrar más fuertes. A veces los silencios son necesarios para valorar aún más a las personas, y creo que eso pasó con nosotras. Ahora que estamos más unidas, puedo decir que te quiero bastante, que agradezco tu forma de ser, tu cariño y esa amistad tan única que compartimos. Gracias por volver a mi vida con tanta luz.",
+  "Zaira Juliana Valbuena":"Zai, desde el 2022 te convertiste en una persona especial para mí. Te quiero por tu forma de acompañar, por tu personalidad tan linda y por todo lo que hemos compartido. Tu amistad ha sido un regalo que valoro muchísimo, gracias por estar ahí en los momentos importantes y por ser tú misma. Te deseo lo mejor en todo lo que emprendas, y espero que nuestra amistad siga creciendo con el tiempo.",
+  "María Isabel Méndez":"Maria, aunque ahora estamos distanciadas, quiero que sepas que eso no borra la importancia que tuviste en mi vida. En su momento fuiste alguien muy significativo, una persona que marcó capítulos enteros de mis días. Te quiero bastante, incluso desde la distancia, y siempre te recordaré con cariño y gratitud.",
+  "Laura Sofía Osorio":"Lau, este año nos encontramos siendo personeras, y qué sorpresa tan bonita fue conocerte. Te volviste alguien muy especial, una amiga con la que puedo hablar, reír y confiar. Me alegra tanto que nuestros caminos se cruzaran, porque personas como tú hacen que todo sea más bonito. Gracias por tu apoyo, tu energía y tu amistad. Te quiero muchísimo.",
+  "María del Pilar Quiceno":"Mamá, tú eres mi fuerza, mi ejemplo y mi amor más grande. Gracias por estar conmigo siempre, por tus sacrificios, por tu paciencia, por tus regaños que también son amor, y por todas las veces en las que me levantaste sin que yo tuviera que pedirlo. Eres mi refugio y mi motivación. No tengo palabras para explicar cuánto te amo, pero espero que la vida me dé la oportunidad de devolverte un poquito de todo lo que tú me has dado.",
+  "Jhon Jader Toro":"Papá, gracias por ser ese pilar silencioso pero firme en mi vida. Por tus esfuerzos, por tu trabajo, por las cosas que haces sin que yo las vea, pero que sé que haces por mí. Te admiro, te agradezco y te quiero profundamente. Eres una parte esencial de quien soy.",
+  "Jayden Toro":"Jayden, tú eres mi compañero de vida. Mi hermano, mi amigo, el que me desespera y me hace reír al mismo tiempo. Gracias por ser tú, por tus ocurrencias, por tus abrazos raros, por tu forma tan única de demostrar cariño. Te quiero más de lo que te digo, y siempre voy a estar para ti."
+};
+const mensajeGeneral="A todos los que han cruzado mi camino, gracias. Cada uno dejó algo en mí: una palabra, una sonrisa, un recuerdo o una lección. No importa si estuvieron poco o mucho tiempo; todos aportaron algo que me ayudó a crecer y a ser quien soy hoy. Gracias por los momentos compartidos, por el cariño, por el apoyo y por hacer mi vida un poco más bonita. Siempre guardaré un lugar especial para cada uno en mi corazón.";
+
+// --- SLIDES ---
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  if(!slides.length) return;
+  let idx = 0;
+  setInterval(()=>{
+    slides[idx].classList.remove('visible');
+    idx = (idx+1)%slides.length;
+    slides[idx].classList.add('visible');
+  },3500);
+})();
+
+// --- HERO Y MENÚ ---
+enterBtn.addEventListener('click', ()=>{
+  hero.style.display='none';
+  menu.style.display='flex';
+  backArrow.style.display='block';
+  document.body.style.overflow='hidden';
+});
+
+btnLibro.addEventListener('click', ()=>{
+  menu.style.display='none';
+  libroRecuerdos.style.display='block';
+  cartasContainer.innerHTML='';
+  buscador.value='';
+  buscador.focus();
+});
+
+menu.addEventListener('click',(e)=>{
+  const btn = e.target.closest('.menu-btn');
+  if(!btn || btn===btnLibro) return;
+  tipoSeleccionado = btn.dataset.tipo || 'Vida';
+  menu.style.display='none';
+  mensajesSection.style.display='block';
+  tituloForm.textContent = tipoSeleccionado==='U'?'Consejos para la U 💛':'Mensajes para la vida ✨';
+});
+
+// --- BACK ARROW ---
+backArrow.addEventListener('click',()=>{
+  if(mensajesSection.style.display==='block'){
+    mensajesSection.style.display='none';
+    menu.style.display='flex';
+    limpiarFormularioYRespuesta();
+  } else if(menu.style.display==='flex'){
+    menu.style.display='none';
+    hero.style.display='flex';
+    backArrow.style.display='none';
+    document.body.style.overflow='auto';
+    limpiarFormularioYRespuesta();
+  } else if(libroRecuerdos.style.display==='block'){
+    libroRecuerdos.style.display='none';
+    menu.style.display='flex';
+  }
+});
+
+backArrowSecreto.addEventListener('click',()=>{
+  modoSecreto.style.display='none';
+  menu.style.display='flex';
+});
+
+// --- FUNCIONES ---
+function limpiarFormularioYRespuesta(){
+  form.reset();
+  respuestaDiv.style.display='none';
+  respuestaDiv.textContent='';
+}
+
+// --- GUARDAR MENSAJES ---
+form.addEventListener('submit',(e)=>{
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value.trim();
+  const mensaje = document.getElementById('mensaje').value.trim();
+  if(!nombre||!mensaje) return;
+
+  const almacen = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+  almacen.push({tipo: tipoSeleccionado||'Vida', nombre, mensaje, ts: new Date().toISOString()});
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(almacen));
+
+  const respuestas=[
+    "Gracias por tus palabras, me las llevo conmigo siempre. 💛",
+    "Tu mensaje significa más de lo que imaginas. ✨",
+    "Gracias por estar aquí en este día tan importante para mí. 🌟",
+    "Tus palabras me llenan el corazón. 💛",
+    "Gracias por hacer parte de este momento especial. 🎓✨",
+    "Lo leo y me emociono: gracias por ser parte de mi historia. 🥹",
+    "Qué regalo recibir tus palabras hoy. Gracias por venir. 🌼"
+  ];
+  const r = respuestas[Math.floor(Math.random()*respuestas.length)];
+  respuestaDiv.textContent = r;
+  respuestaDiv.style.display='block';
+  form.reset();
+  setTimeout(()=>{respuestaDiv.style.display='none';},3000);
+});
+
+// --- BUSCADOR LIBRO ---
+buscador.addEventListener('keypress', e=>{
+  if(e.key==='Enter'){
+    e.preventDefault();
+    const nombreBuscado = buscador.value.trim();
+    if(!nombreBuscado) return;
+    let mensaje = mensajeGeneral;
+    for(const key in mensajesPersonalizados){
+      if(key.toLowerCase().includes(nombreBuscado.toLowerCase())){
+        mensaje = mensajesPersonalizados[key];
+        break;
+      }
+    }
+    cartasContainer.innerHTML='';
+    const carta=document.createElement('div');
+    carta.className='carta mostrar';
+    carta.innerHTML=`<strong>${nombreBuscado}</strong><p class="mensajeCarta"></p>`;
+    cartasContainer.appendChild(carta);
+
+    const p=carta.querySelector('.mensajeCarta');
+    let i=0;
+    function escribir(){
+      if(i<mensaje.length){
+        p.innerHTML+=mensaje.charAt(i);
+        i++;
+        escrituraTimeout=setTimeout(escribir,25);
+      }
+    }
+    escribir();
+  }
+});
+
+// --- MODO SECRETO ---
+secretTrigger.addEventListener('click',()=>{
+  secretClickCount++;
+  if(secretClickCount>=5){
+    const pass=prompt("Ingrese la contraseña secreta:");
+    if(pass===SECRET_PASSWORD){
+      hero.style.display='none';
+      menu.style.display='none';
+      modoSecreto.style.display='block';
+
+      const almacen=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+      listaU.innerHTML=''; listaVida.innerHTML='';
+      almacen.forEach((m,index)=>{
+        const div=document.createElement('div');
+        div.className='mensaje-secreto';
+        div.innerHTML=`${m.nombre}: ${m.mensaje} <button data-idx="${index}" style="float:right;background:var(--gold);color:#fff;border:none;padding:2px 6px;border-radius:6px;cursor:pointer;">Eliminar</button>`;
+        const btnEliminar=div.querySelector('button');
+        btnEliminar.addEventListener('click',()=>{
+          almacen.splice(index,1);
+          localStorage.setItem(STORAGE_KEY,JSON.stringify(almacen));
+          div.remove();
+        });
+        if(m.tipo==='U') listaU.appendChild(div);
+        else listaVida.appendChild(div);
+      });
+    }
+    secretClickCount=0;
+  }
+});
+
+// --- SLIDES HERO ---
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  if(!slides.length) return;
+  let idx=0;
+  setInterval(()=>{
+    slides[idx].classList.remove('visible');
+    idx=(idx+1)%slides.length;
+    slides[idx].classList.add('visible');
+  },3500);
+})();
+</script>
+</body>
+</html>
